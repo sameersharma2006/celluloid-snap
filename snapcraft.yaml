@@ -1,0 +1,217 @@
+name: celluloid
+base: core22
+adopt-info: celluloid  
+grade: stable
+confinement: strict
+compression: lzo
+architectures:
+  - build-on: amd64
+  
+slots:
+  celluloid:
+    interface: dbus
+    bus: session
+    name: io.github.celluloid_player.Celluloid
+  mpris:
+    name: Celluloid
+    
+environment:
+  # WORKAROUND: Add python modules in Snap to search path
+  PYTHONPATH: ${SNAP}/lib/python3.10/site-packages:${SNAP}/usr/lib/python3/dist-packages
+
+apps:
+  celluloid:
+    command: usr/bin/celluloid
+    extensions: [gnome]
+    environment:
+      LD_LIBRARY_PATH: $SNAP/usr/lib/x86_64-linux-gnu/blas:$SNAP/usr/lib/x86_64-linux-gnu/lapack:$SNAP/usr/lib/x86_64-linux-gnu
+    common-id: io.github.celluloid_player.Celluloid 
+    desktop: usr/share/applications/io.github.celluloid_player.Celluloid.desktop
+    plugs:
+      - home
+      - audio-playback
+      - media-control
+      - bluez
+      - network
+      - removable-media
+      - unity7
+      - optical-drive
+      - screen-inhibit-control
+    slots:
+      - mpris
+    
+parts: 
+  mpv:
+    source: https://github.com/mpv-player/mpv.git
+    after: [yt-dlp]
+    plugin: meson
+    meson-parameters:
+      - -Dprefix=/usr
+      - --buildtype=release
+      - -Dlibmpv=true
+    build-packages:
+      - curl
+      - libavcodec-dev
+      - libavfilter-dev
+      - libass-dev
+      - libx264-dev
+      - libvorbis-dev
+      - libjpeg-turbo8-dev
+      - x11-utils
+      - libx11-6
+      - libx11-dev 
+      - wayland-protocols
+    prime:
+      - usr/lib/*/libmpv*
+  
+  celluloid:
+    source: https://github.com/celluloid-player/celluloid.git
+    after: [mpv]
+    plugin: meson
+    parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
+    meson-parameters:
+      - -Dprefix=/usr
+    override-pull: |
+      craftctl default
+      craftctl set version=$(git describe --tags --abbrev=0 | cut -c 2-)
+  
+  yt-dlp:
+    # Missing optional dependencies atomicparsley, mpv, phantomjs and rtmpdump
+    plugin: python
+    source: https://github.com/yt-dlp/yt-dlp/releases/download/2023.03.04/yt-dlp.tar.gz
+    source-checksum: sha256/771d2abefcd5f1e6f3ab6d6d18cdae98be4ab73538d1174e7e7236640418e150
+    python-packages:
+      - pyxattr==0.7.2
+    build-environment:
+      # WORKAROUND: The python plugin is broken with gnome extension
+      - PATH: ${CRAFT_PART_INSTALL}/bin:${PATH}
+      - PYTHONPATH: ""
+    override-pull: |
+      craftctl default
+      sed -i 's/^certifi\b/#\0/' requirements.txt
+    stage:
+      # WORKAROUND: Skip venv from python plugin
+      - -bin/activate
+      - -bin/activate.csh
+      - -bin/activate.fish
+      - -bin/Activate.ps1
+      - -bin/python
+      - -bin/python3
+      - -bin/python3.10
+      - -bin/pip
+      - -bin/pip3
+      - -bin/pip3.10
+      - -pyvenv.cfg
+
+  
+  deps:
+    plugin: nil
+    stage-packages:
+      - libaom3
+      - libass9
+      - libblas3
+      - libbluray2
+      - libbs2b0
+      - libchromaprint1
+      - libcodec2-1.0
+      - libflite1
+      - libgme0
+      - libgsm1
+      - liblapack3
+      - liblilv-0-0
+      - libmfx1
+      - libmysofa1
+      - libnorm1
+      - libnuma1
+      - libopenmpt0
+      - libpgm-5.3-0
+      - libpocketsphinx3
+      - librabbitmq4
+      - librubberband2
+      - libserd-0-0
+      - libshine3
+      - libsnappy1v5
+      - libsodium23
+      - libsord-0-0
+      - libsoxr0
+      - libsphinxbase3
+      - libsratom-0-0
+      - libssh-gcrypt-4
+      - libudfread0
+      - libva-drm2
+      - libva-x11-2
+      - libvdpau1
+      - libvidstab1.1
+      - libx265-199
+      - libxvidcore4
+      - libzimg2
+      - libzmq5
+      - libzvbi0
+      - libavfilter7
+      - libavformat58
+      - libpostproc55
+      - libswscale5
+      - libsrt1.4-gnutls
+      - ocl-icd-libopencl1
+      - libva-wayland2
+    prime:
+      - usr/lib/*/blas/libblas.so*
+      - usr/lib/*/lapack/liblapack.so*
+      - usr/lib/*/libaom.so*
+      - usr/lib/*/libass.so*
+      - usr/lib/*/libbluray.so*
+      - usr/lib/*/libbs2b.so*
+      - usr/lib/*/libchromaprint.so*
+      - usr/lib/*/libcodec2.so*
+      - usr/lib/*/libflite_cmulex.so*
+      - usr/lib/*/libflite_cmu_us_awb.so*
+      - usr/lib/*/libflite_cmu_us_kal16.so*
+      - usr/lib/*/libflite_cmu_us_kal.so*
+      - usr/lib/*/libflite_cmu_us_rms.so*
+      - usr/lib/*/libflite_cmu_us_slt.so*
+      - usr/lib/*/libflite.so*
+      - usr/lib/*/libflite_usenglish.so*
+      - usr/lib/*/libgme.so*
+      - usr/lib/*/libgsm.so*
+      - usr/lib/*/liblilv-0.so*
+      - usr/lib/*/libmfx.so*
+      - usr/lib/*/libmysofa.so*
+      - usr/lib/*/libnorm.so*
+      - usr/lib/*/libnuma.so*
+      - usr/lib/*/libOpenCL.so*
+      - usr/lib/*/libopenmpt.so*
+      - usr/lib/*/libpgm-5.3.so*
+      - usr/lib/*/libpocketsphinx.so*
+      - usr/lib/*/librabbitmq.so*
+      - usr/lib/*/librubberband.so*
+      - usr/lib/*/libserd-0.so*
+      - usr/lib/*/libshine.so*
+      - usr/lib/*/libsnappy.so*
+      - usr/lib/*/libsodium.so*
+      - usr/lib/*/libsord-0.so*
+      - usr/lib/*/libsoxr.so*
+      - usr/lib/*/libsphinxbase.so*
+      - usr/lib/*/libsratom-0.so*
+      - usr/lib/*/libssh-gcrypt.so*
+      - usr/lib/*/libudfread.so*
+      - usr/lib/*/libva-drm.so*
+      - usr/lib/*/libva-x11.so*
+      - usr/lib/*/libvdpau.so*
+      - usr/lib/*/libvidstab.so*
+      - usr/lib/*/libx265.so*
+      - usr/lib/*/libxvidcore.so*
+      - usr/lib/*/libzimg.so*
+      - usr/lib/*/libzmq.so*
+      - usr/lib/*/libzvbi.so*
+      - usr/lib/*/libx264.so*
+      - usr/lib/*/libswscale.so*
+      - usr/lib/*/libavfilter.so*
+      - usr/lib/*/libavformat.so*
+      - usr/lib/*/libpostproc.so*
+      - usr/lib/*/libsrt*.so*
+      - usr/lib/*/libda*.so*
+      - usr/lib/*/libgfortran.so*
+      - usr/lib/*/libavcodec.so*
+      - usr/lib/*/libavutil.so*
+      - usr/lib/*/libswresample.so*
+      - usr/lib/*/libva-wayland2.so*
