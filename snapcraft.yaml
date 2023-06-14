@@ -153,7 +153,7 @@ parts:
       - libswscale5
       - libsrt1.4-gnutls
       - ocl-icd-libopencl1
-      - libva-wayland2
+      
     prime:
       - usr/lib/*/blas/libblas.so*
       - usr/lib/*/lapack/liblapack.so*
@@ -214,4 +214,4 @@ parts:
       - usr/lib/*/libavcodec.so*
       - usr/lib/*/libavutil.so*
       - usr/lib/*/libswresample.so*
-      - usr/lib/*/libva-wayland2.so*
+      
