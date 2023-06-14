@@ -16,7 +16,7 @@ slots:
     name: Celluloid
     
 environment:
-  # WORKAROUND: Add python modules in Snap to search path
+  # WORKAROUND: Add python modules in Snap to search path (Need changes)
   PYTHONPATH: ${SNAP}/lib/python3.10/site-packages:${SNAP}/usr/lib/python3/dist-packages
 
 apps:
