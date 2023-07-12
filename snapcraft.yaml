@@ -81,6 +81,8 @@ parts:
       - libx264-dev
       - libvorbis-dev
       - libjpeg-turbo8-dev
+    build-environment:
+      - PATH: ${CRAFT_PART_INSTALL}/usr/lib/$CRAFT_ARCH_TRIPLET:${CRAFT_PART_INSTALL}/usr/bin:${CRAFT_PART_INSTALL}/usr:${PATH}  
     prime:
       - usr/lib/*/libmpv*
   
@@ -95,7 +97,7 @@ parts:
     override-pull: |
       craftctl default
       craftctl set version=$(git describe --tags --abbrev=0 | cut -c 2-)
-  
+    
   yt-dlp:
     # Missing optional dependencies atomicparsley,phantomjs and rtmpdump
     plugin: python
