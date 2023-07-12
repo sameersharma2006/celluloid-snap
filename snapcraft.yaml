@@ -74,6 +74,8 @@ parts:
       - -Dprefix=/usr
       - -Dbuildtype=release
       - -Dlibmpv=true
+      - -Dx11=enabled
+      - -Dwayland=enabled
     build-packages:
       - curl
       - libass-dev
