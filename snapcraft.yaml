@@ -64,8 +64,7 @@ parts:
       - libvorbis-dev
     stage-packages:
       - libmp3lame0
-    stage:
-      - -usr/include
+    
   mpv:
     source: https://github.com/mpv-player/mpv.git
     source-tag: v0.35.1
@@ -81,8 +80,6 @@ parts:
       - libx264-dev
       - libvorbis-dev
       - libjpeg-turbo8-dev
-    build-environment:
-      - PATH: ${CRAFT_PART_INSTALL}/usr/lib/$CRAFT_ARCH_TRIPLET:${CRAFT_PART_INSTALL}/usr/bin:${CRAFT_PART_INSTALL}/usr:${PATH}  
     prime:
       - usr/lib/*/libmpv*
   
