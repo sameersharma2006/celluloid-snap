@@ -82,6 +82,7 @@ parts:
       - libx264-dev
       - libvorbis-dev
       - libjpeg-turbo8-dev
+      - libxss-dev
     prime:
       - usr/lib/*/libmpv*
   
