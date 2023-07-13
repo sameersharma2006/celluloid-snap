@@ -83,9 +83,8 @@ parts:
       - libvorbis-dev
       - libjpeg-turbo8-dev
       - libxss-dev
-    prime:
-      - usr/lib/*/libmpv*
-  
+      - libxpresent-dev
+    
   libass:
     source: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
     after: [yt-dlp]
