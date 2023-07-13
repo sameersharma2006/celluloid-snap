@@ -85,10 +85,19 @@ parts:
     prime:
       - usr/lib/*/libmpv*
   
+  libass:
+    source: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
+    after: [yt-dlp]
+    plugin: autotools
+    autotools-configure-parameters:
+      - --prefix=/usr 
+      - --disable-static 
+      - --disable-fontconfig
+  
   celluloid:
     source: https://github.com/celluloid-player/celluloid.git
     source-tag: v0.25
-    after: [yt-dlp]
+    after: [libass]
     plugin: meson
     parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
     meson-parameters:
