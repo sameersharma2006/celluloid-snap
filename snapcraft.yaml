@@ -85,7 +85,9 @@ parts:
       - libxss-dev
       - libxpresent-dev
       - libpipewire-0.3-dev
-    
+    prime:
+      - usr/lib/*/libmpv*
+      
   libass:
     source: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
     after: [yt-dlp]
@@ -94,6 +96,7 @@ parts:
       - --prefix=/usr 
       - --disable-static 
       - --disable-fontconfig
+      - --disable-require-system-font-provider
   
   celluloid:
     source: https://github.com/celluloid-player/celluloid.git
