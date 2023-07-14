@@ -44,6 +44,7 @@ parts:
     plugin: autotools
     source: https://ffmpeg.org/releases/ffmpeg-6.0.tar.xz
     source-checksum: sha256/57be87c22d9b49c112b6d24bc67d42508660e6b718b3db89c44e47e289137082
+    after: [libass]
     autotools-configure-parameters:
       - --prefix=/usr
       - --libdir=/usr/lib/$CRAFT_ARCH_TRIPLET
@@ -78,7 +79,6 @@ parts:
       - -Dwayland=enabled
     build-packages:
       - curl
-      - libass-dev
       - libx264-dev
       - libvorbis-dev
       - libjpeg-turbo8-dev
@@ -88,9 +88,32 @@ parts:
     prime:
       - usr/lib/*/libmpv*
       
+  xss:
+    source: https://gitlab.freedesktop.org/xorg/lib/libxscrnsaver.git
+    source-tag: libXScrnSaver-1.2.4
+    plugin: autotools
+    autotools-configure-parameters:
+      - --prefix=/usr   
+    build-packages: 
+      - x11proto-dev
+      - xutils-dev
+      - libxext-dev    
+    
+  xpresent:
+    source: https://gitlab.freedesktop.org/xorg/lib/libxpresent.git
+    source-tag: libXpresent-1.0.1
+    after: [xss]
+    plugin: autotools
+    autotools-configure-parameters:
+      - --prefix=/usr 
+    build-packages: 
+      - x11proto-dev
+      - xutils-dev
+      - libxext-dev    
+        
   libass:
     source: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
-    after: [yt-dlp]
+    after: [xpresent]
     plugin: autotools
     autotools-configure-parameters:
       - --prefix=/usr 
@@ -101,7 +124,7 @@ parts:
   celluloid:
     source: https://github.com/celluloid-player/celluloid.git
     source-tag: v0.25
-    after: [libass]
+    after: [yt-dlp]
     plugin: meson
     parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
     meson-parameters:
@@ -138,17 +161,17 @@ parts:
       - -bin/pip3
       - -bin/pip3.10
       - -pyvenv.cfg
-  deps:
-    plugin: nil
-    after: [celluloid]
-    stage-packages:
-      #- libpipewire-0.3-0 
-      - libxpresent1
-      - libxss1
-
+ 
+  fatloss:
+    after: celluloid
+    override-prime:
+      craftctl default |
+      rm -r usr/include
+      rm -r usr/share/doc
+      
   cleanup:
     after:  
-      - celluloid
+      - fatloss
     plugin: nil
     build-snaps: 
       - gnome-42-2204
