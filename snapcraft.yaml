@@ -84,7 +84,7 @@ parts:
       - libjpeg-turbo8-dev
       - libxss-dev
       - libxpresent-dev
-      - libpipewire-0.3-dev
+      #- libpipewire-0.3-dev
     prime:
       - usr/lib/*/libmpv*
       
@@ -142,7 +142,7 @@ parts:
     plugin: nil
     after: [celluloid]
     stage-packages:
-      - libpipewire-0.3-0 
+      #- libpipewire-0.3-0 
       - libxpresent1
       - libxss1
 
