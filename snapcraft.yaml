@@ -162,6 +162,7 @@ parts:
  
   fatloss:
     after: celluloid
+    plugin: nil
     override-prime:
       craftctl default |
       rm -r usr/include
