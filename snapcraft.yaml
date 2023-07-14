@@ -161,7 +161,7 @@ parts:
       - -pyvenv.cfg
  
   fatloss:
-    after: celluloid
+    after: [celluloid]
     plugin: nil
     override-prime:
       craftctl default |
