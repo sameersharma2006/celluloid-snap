@@ -138,7 +138,18 @@ parts:
       - -bin/pip3
       - -bin/pip3.10
       - -pyvenv.cfg
-   
+  deps:
+    plugin: nil
+    after: [celluloid]
+    stage-packages:
+      - libpipewire-0.3-0 
+      - libxpresent1
+      - libxss1
+    prime:
+      - usr/lib/*/libxss*
+      - usr/lib/*/libpipewire*
+      - usr/lib/*/libxpresent*
+        
   cleanup:
     after:  
       - celluloid
