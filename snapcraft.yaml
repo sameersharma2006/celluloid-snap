@@ -145,11 +145,7 @@ parts:
       - libpipewire-0.3-0 
       - libxpresent1
       - libxss1
-    prime:
-      - usr/lib/*/libxss*
-      - usr/lib/*/libpipewire*
-      - usr/lib/*/libxpresent*
-        
+
   cleanup:
     after:  
       - celluloid
