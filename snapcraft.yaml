@@ -68,7 +68,7 @@ parts:
   mpv:
     source: https://github.com/mpv-player/mpv.git
     source-tag: v0.35.1
-    after: [ffmpeg]
+    after: [ffmpeg, libass]
     plugin: meson
     meson-parameters:
       - -Dprefix=/usr
@@ -116,7 +116,6 @@ parts:
        
   libass:
     source: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
-    after: [yt-dlp]
     plugin: autotools
     autotools-configure-parameters:
       - --prefix=/usr 
@@ -127,7 +126,7 @@ parts:
   celluloid:
     source: https://github.com/celluloid-player/celluloid.git
     source-tag: v0.25
-    after: [libass]
+    after: [yt-dlp]
     plugin: meson
     parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
     meson-parameters:
