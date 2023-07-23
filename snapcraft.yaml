@@ -72,9 +72,12 @@ parts:
     autotools-configure-parameters:
       - --prefix=/usr 
       - --disable-static 
-      - --disable-fontconfig
-      - --disable-require-system-font-provider
-      
+      #- --disable-fontconfig
+      #- --disable-require-system-font-provider
+    build-packages:
+      - libfontconfig-dev
+      - libfreetype-dev
+    
   mpv:
     source: https://github.com/mpv-player/mpv.git
     source-tag: v0.35.1
