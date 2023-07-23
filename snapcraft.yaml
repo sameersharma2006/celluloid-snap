@@ -78,7 +78,7 @@ parts:
   mpv:
     source: https://github.com/mpv-player/mpv.git
     source-tag: v0.35.1
-    after: [libass]
+    after: [libass, ffmpeg]
     plugin: meson
     meson-parameters:
       - -Dprefix=/usr
