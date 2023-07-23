@@ -81,6 +81,8 @@ parts:
       - libx264-dev
       - libvorbis-dev
       - libjpeg-turbo8-dev
+      - libxss-dev
+      - libxpresent-dev
       #- libpipewire-0.3-dev (Disabled pipewire since it crashes the app on startup.)
     prime:
       - usr/lib/*/libmpv*
