@@ -64,11 +64,21 @@ parts:
       - libvorbis-dev
     stage-packages:
       - libmp3lame0
-    
+  
+  
+  libass:
+    source: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
+    plugin: autotools
+    autotools-configure-parameters:
+      - --prefix=/usr 
+      - --disable-static 
+      - --disable-fontconfig
+      - --disable-require-system-font-provider
+      
   mpv:
     source: https://github.com/mpv-player/mpv.git
     source-tag: v0.35.1
-    after: [ffmpeg, libass]
+    after: [libass]
     plugin: meson
     meson-parameters:
       - -Dprefix=/usr
@@ -78,12 +88,12 @@ parts:
       - -Dwayland=enabled
     build-packages:
       - curl
+      - libass-dev
       - libx264-dev
       - libvorbis-dev
       - libjpeg-turbo8-dev
       - libxss-dev
       - libxpresent-dev
-      #- libpipewire-0.3-dev (Disabled pipewire since it crashes the app on startup.)
     prime:
       - usr/lib/*/libmpv*
   
@@ -115,16 +125,8 @@ parts:
       - -bin/pip3
       - -bin/pip3.10
       - -pyvenv.cfg
-       
-  libass:
-    source: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
-    plugin: autotools
-    autotools-configure-parameters:
-      - --prefix=/usr 
-      - --disable-static 
-      - --disable-fontconfig
-      - --disable-require-system-font-provider
   
+      
   celluloid:
     source: https://github.com/celluloid-player/celluloid.git
     source-tag: v0.25
@@ -136,23 +138,26 @@ parts:
     override-pull: |
       craftctl default
       craftctl set version=$(git describe --tags --abbrev=0 | cut -c 2-)
-  
+    
   deps:
     plugin: nil
     after: [celluloid]
-    stage-packages:
-      #- libpipewire-0.3-0 (Disabled pipewire since it crashes the app on startup.)
+    stage-packages: 
       - libxpresent1
       - libxss1
   
   fatloss:
-    after: [deps]
+    after:  
+      - deps
     plugin: nil
-    override-prime:
-      craftctl default |
-      rm -rf usr/include
+    override-prime: |
+      craftctl default
       rm -rf usr/share/doc
-      
+      rm -rf usr/share/man
+      rm -rf usr/share/locale
+      rm -rf usr/share/ffmpeg/examples
+      rm -rf usr/include
+  
   cleanup:
     after:  
       - fatloss
