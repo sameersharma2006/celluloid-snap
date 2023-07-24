@@ -87,8 +87,6 @@ parts:
       - -Dx11=enabled
       - -Dwayland=enabled
     build-packages:
-      - curl
-      - libass-dev
       - libx264-dev
       - libvorbis-dev
       - libjpeg-turbo8-dev
