@@ -84,14 +84,10 @@ parts:
       - -Dprefix=/usr
       - -Dbuildtype=release
       - -Dlibmpv=true
-      - -Dx11=enabled
-      - -Dwayland=enabled
     build-packages:
       - libx264-dev
       - libvorbis-dev
       - libjpeg-turbo8-dev
-      - libxss-dev
-      - libxpresent-dev
     prime:
       - usr/lib/*/libmpv*
   
@@ -136,17 +132,10 @@ parts:
     override-pull: |
       craftctl default
       craftctl set version=$(git describe --tags --abbrev=0 | cut -c 2-)
-    
-  deps:
-    plugin: nil
-    after: [celluloid]
-    stage-packages: 
-      - libxpresent1
-      - libxss1
   
   fatloss:
     after:  
-      - deps
+      - celluloid
     plugin: nil
     override-prime: |
       craftctl default
