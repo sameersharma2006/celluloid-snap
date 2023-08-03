@@ -16,7 +16,6 @@ slots:
     name: Celluloid
     
 environment:
-  # WORKAROUND: Add python modules in Snap to search path (Need changes)
   PYTHONPATH: ${SNAP}/lib/python3.10/site-packages:${SNAP}/usr/lib/python3/dist-packages
 
 apps:
@@ -118,14 +117,13 @@ parts:
        
   celluloid:
     source: https://github.com/celluloid-player/celluloid.git
-    source-tag: v0.25
+    source-commit: c58761256b57283f58db21efe63ed88ea1d43884 #Still at 0.25, but using some commits meant for 0.25+.
     after: [yt-dlp]
     plugin: meson
     parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
     meson-parameters:
       - --prefix=/usr
-      - --buildtype=debug
-      #- --buildtype=release [Disabled Since Celluloid Wont Build With This Flag Enabled.]
+      #- --buildtype=release [Disabled Since Celluloid Snap Wont Build With This Flag Enabled.]
     override-pull: |
       craftctl default
       craftctl set version=$(git describe --tags --abbrev=0 | cut -c 2-)
@@ -141,6 +139,8 @@ parts:
       rm -rf usr/share/locale
       rm -rf usr/share/ffmpeg/examples
       rm -rf usr/include
+      rm -rf usr/lib/$CRAFT_ARCH_TRIPLET/pkgconfig
+      rm -rf usr/lib/pkgconfig
       rm -rf lib/python3.10/site-packages/setuptools*
       rm -rf lib/python3.10/site-packages/pip*
       rm -rf share/doc
