@@ -125,16 +125,17 @@ parts:
    
   celluloid:
     source: https://github.com/celluloid-player/celluloid.git
+    source-tag: v0.25
     after: [yt-dlp]
     plugin: meson
     parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
     meson-parameters:
       - --prefix=/usr
-      - --buildtype=release
     override-pull: |
       craftctl default
       craftctl set version=$(git describe --tags --abbrev=0 | cut -c 2-)
       sed -e 's|Icon=io.github.celluloid_player.Celluloid|Icon=${SNAP}usr/share/icons/hicolor/scalable/apps/github.celluloid_player.Celluloid.svg|' -i data/io.github.celluloid_player.Celluloid.desktop.in
+      patch -p1 < $CRAFT_PROJECT_DIR/local/patches/upstream.patch
 
   cleanup:
     after:  
