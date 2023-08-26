@@ -16,6 +16,9 @@ slots:
   mpris:
     name: Celluloid
     
+environment:
+  PYTHONPATH: ${SNAP}/lib/python3.10/site-packages:${SNAP}/usr/lib/python3/dist-packages
+
 apps:
   celluloid:
     command: usr/bin/celluloid
@@ -65,37 +68,95 @@ parts:
       - -usr/share/ffmpeg/examples
     prime:  
       - -usr/include
-      - -usr/lib/*/pkgconfig
-
+      - -usr/lib/*/pkgconfig  
+    
+  libass:
+    source: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
+    source-checksum: sha256/f0da0bbfba476c16ae3e1cfd862256d30915911f7abaa1b16ce62ee653192784
+    plugin: autotools
+    autotools-configure-parameters:
+      - --prefix=/usr 
+      - --disable-static 
+    build-packages:
+      - libfontconfig-dev
+      - libfreetype-dev
+    stage:
+      - usr  
+    prime:
+      - -usr/include    
+    
+  mpv:
+    source: https://github.com/mpv-player/mpv.git
+    source-tag: v0.35.1
+    after: [libass]
+    plugin: meson
+    meson-parameters:
+      - -Dprefix=/usr
+      - -Dbuildtype=release
+      - -Dlibmpv=true
+      - -Dx11=enabled
+      - -Dwayland=enabled
+    build-packages:
+      - curl
+      - libx264-dev
+      - libvorbis-dev
+      - libjpeg-turbo8-dev
+      - libxss-dev
+      - libxpresent-dev
+    prime:
+      - usr/lib/*/libmpv*
+  
+  yt-dlp:
+    plugin: python
+    after: [mpv]
+    source: https://github.com/yt-dlp/yt-dlp/releases/download/2023.07.06/yt-dlp.tar.gz
+    source-checksum: sha256/6d2115b84b6c11867f92cf4c23705b536bfa0ba9d538b1885f52da6756f8c980
+    python-packages:
+      - pyxattr==0.8.1
+    build-environment:
+      - PATH: ${CRAFT_PART_INSTALL}/bin:${PATH}
+      - PYTHONPATH: ""
+    override-pull: |
+      craftctl default
+      sed -i 's/^certifi\b/#\0/' requirements.txt
+    stage:
+      - -bin/activate*
+      - -bin/Activate.ps1
+      - -bin/python*
+      - -bin/pip*
+      - -pyvenv.cfg
+      - -lib/**/setuptools*
+      - -lib/**/pip*
+      - -share/doc
+      - -share/man
+      
   celluloid:
     source: https://github.com/celluloid-player/celluloid.git
     source-tag: v0.25
-    after: [ffmpeg]
+    after: [yt-dlp]
     plugin: meson
     parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
     meson-parameters:
-      - --prefix=/snap/celluloid/current/usr
-    build-packages:
-      - libass-dev 
-      - libmpv-dev 
+      - -Dprefix=/usr
     override-pull: |
       craftctl default
       craftctl set version=$(git describe --tags --abbrev=0 | cut -c 2-)
-      sed -e 's|Icon=io.github.celluloid_player.Celluloid|Icon=${SNAP}usr/share/icons/hicolor/scalable/apps/github.celluloid_player.Celluloid.svg|' -i data/io.github.celluloid_player.Celluloid.desktop.in
+      sed -e 's|Icon=io.github.celluloid_player.Celluloid|Icon=${SNAP}/usr/share/icons/hicolor/scalable/apps/github.celluloid_player.Celluloid.svg|' -i data/io.github.celluloid_player.Celluloid.desktop.in
       patch -p1 < $CRAFT_PROJECT_DIR/local/patches/upstream.patch
-    organize:
-      snap/celluloid/current/usr: usr  
-  
-  deps:
-    after: [celluloid]
-    plugin: nil
-    stage-packages:
-      - libmpv1
-      - libass9
     prime:
-      - usr/lib/*/libass*
-      - usr/lib/*/libmpv*  
+      - -usr/share/doc
+      - -usr/share/man  
     
+  deps:
+    plugin: nil
+    after: [celluloid]
+    stage-packages: 
+      - libxpresent1
+      - libxss1
+    prime:
+      - usr/lib/*/libXss*
+      - usr/lib/*/libxpresent*
+           
   cleanup:
     after:  
       - deps
@@ -108,4 +169,5 @@ parts:
       set -eux
       for snap in "gnome-42-2204" "core22" "gtk-common-themes"; do
           cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$CRAFT_PRIME/{}" \;
-      done
+      done  
+      

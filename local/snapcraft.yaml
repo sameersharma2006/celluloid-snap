@@ -1,0 +1,80 @@
+name: celluloid
+base: core22
+adopt-info: celluloid  
+grade: stable
+confinement: strict
+compression: lzo
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+  
+slots:
+  celluloid:
+    interface: dbus
+    bus: session
+    name: io.github.celluloid_player.Celluloid
+  mpris:
+    name: Celluloid
+    
+apps:
+  celluloid:
+    command: usr/bin/celluloid
+    extensions: [gnome]
+    common-id: io.github.celluloid_player.Celluloid 
+    desktop: usr/share/applications/io.github.celluloid_player.Celluloid.desktop
+    plugs:
+      - home
+      - audio-playback
+      - bluez
+      - network
+      - network-bind
+      - network-status
+      - removable-media
+      - unity7
+      - optical-drive
+      - screen-inhibit-control
+    slots:
+      - mpris
+    
+parts: 
+  celluloid:
+    source: https://github.com/celluloid-player/celluloid.git
+    source-tag: v0.25
+    plugin: meson
+    parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
+    meson-parameters:
+      - --prefix=/usr
+    build-packages:
+      - libmpv-dev
+      - libavcodec-dev
+      - libavfilter-dev
+      - libass-dev 
+    override-pull: |
+      craftctl default
+      craftctl set version=$(git describe --tags --abbrev=0 | cut -c 2-)
+      sed -e 's|Icon=io.github.celluloid_player.Celluloid|Icon=${SNAP}/usr/share/icons/hicolor/scalable/apps/github.celluloid_player.Celluloid.svg|' -i data/io.github.celluloid_player.Celluloid.desktop.in
+      patch -p1 < $CRAFT_PROJECT_DIR/local/patches/upstream.patch
+     
+  deps:
+    after: [celluloid]
+    plugin: nil
+    stage-packages:
+      - libmpv1
+      - libass9
+    prime:
+      - usr/lib/*/libass*
+      - usr/lib/*/libmpv*  
+    
+  cleanup:
+    after:  
+      - deps
+    plugin: nil
+    build-snaps: 
+      - gnome-42-2204
+      - core22
+      - gtk-common-themes
+    override-prime: |
+      set -eux
+      for snap in "gnome-42-2204" "core22" "gtk-common-themes"; do
+          cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$CRAFT_PRIME/{}" \;
+      done
