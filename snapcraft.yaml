@@ -6,6 +6,7 @@ confinement: strict
 compression: lzo
 architectures:
   - build-on: amd64
+  - build-on: arm64
   
 slots:
   celluloid:
@@ -19,9 +20,6 @@ apps:
   celluloid:
     command: usr/bin/celluloid
     extensions: [gnome]
-    environment:
-      PYTHONPATH: ${SNAP}/lib/python3.10/site-packages:${SNAP}/usr/lib/python3/dist-packages
-      TMPDIR: $XDG_RUNTIME_DIR
     common-id: io.github.celluloid_player.Celluloid 
     desktop: usr/share/applications/io.github.celluloid_player.Celluloid.desktop
     plugs:
@@ -70,7 +68,8 @@ parts:
       - -usr/lib/*/pkgconfig
      
   libass:
-    source: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.gz
+    source: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
+    source-checksum: sha256/f0da0bbfba476c16ae3e1cfd862256d30915911f7abaa1b16ce62ee653192784
     after: [ffmpeg]
     plugin: autotools
     autotools-configure-parameters:
@@ -79,6 +78,10 @@ parts:
     build-packages:
       - libfontconfig-dev
       - libfreetype-dev
+    stage:
+      - usr  
+    prime:
+      - -usr/include  
     
   mpv:
     source: https://github.com/mpv-player/mpv.git
@@ -99,43 +102,22 @@ parts:
     prime:
       - -usr/include
   
-  yt-dlp:
-    plugin: python
-    after: [mpv]
-    source: https://github.com/yt-dlp/yt-dlp/releases/download/2023.07.06/yt-dlp.tar.gz
-    source-checksum: sha256/6d2115b84b6c11867f92cf4c23705b536bfa0ba9d538b1885f52da6756f8c980
-    python-packages:
-      - pyxattr==0.8.1
-    build-environment:
-      - PATH: ${CRAFT_PART_INSTALL}/bin:${PATH}
-      - PYTHONPATH: ""
-    override-pull: |
-      craftctl default
-      sed -i 's/^certifi\b/#\0/' requirements.txt
-    stage:
-      - -bin/activate*
-      - -bin/Activate.ps1
-      - -bin/python*
-      - -bin/pip*
-      - -pyvenv.cfg
-      - -lib/**/setuptools*
-      - -lib/**/pip*
-      - -share/doc
-      - -share/man
-   
   celluloid:
     source: https://github.com/celluloid-player/celluloid.git
     source-tag: v0.25
-    after: [yt-dlp]
+    after: [mpv]
     plugin: meson
     parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
     meson-parameters:
-      - --prefix=/usr
+      - --prefix=/snap/celluloid/current/usr
+      - --buildtype=release
     override-pull: |
       craftctl default
       craftctl set version=$(git describe --tags --abbrev=0 | cut -c 2-)
       sed -e 's|Icon=io.github.celluloid_player.Celluloid|Icon=${SNAP}usr/share/icons/hicolor/scalable/apps/github.celluloid_player.Celluloid.svg|' -i data/io.github.celluloid_player.Celluloid.desktop.in
       patch -p1 < $CRAFT_PROJECT_DIR/local/patches/upstream.patch
+    organize:
+      snap/celluloid/current/usr: usr  
 
   cleanup:
     after:  
