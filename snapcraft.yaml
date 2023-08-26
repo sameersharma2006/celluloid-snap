@@ -75,7 +75,6 @@ parts:
     parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
     meson-parameters:
       - --prefix=/snap/celluloid/current/usr
-      - --buildtype=release
     build-packages:
       - libass-dev 
       - libmpv-dev 
