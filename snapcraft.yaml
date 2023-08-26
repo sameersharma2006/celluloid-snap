@@ -64,23 +64,11 @@ parts:
       - libvorbis-dev
     stage-packages:
       - libmp3lame0
-        
-  libass:
-    source: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
-    source-checksum: sha256/f0da0bbfba476c16ae3e1cfd862256d30915911f7abaa1b16ce62ee653192784
-    after: [ffmpeg]
-    plugin: autotools
-    autotools-configure-parameters:
-      - --prefix=/usr 
-      - --disable-static 
-    build-packages:
-      - libfontconfig-dev
-      - libfreetype-dev
-  
+
   mpv:
     source: https://github.com/mpv-player/mpv.git
     source-tag: v0.35.1
-    after: [libass]
+    after: [ffmpeg]
     plugin: meson
     meson-parameters:
       - -Dprefix=/usr
@@ -91,6 +79,7 @@ parts:
     build-packages:
       - curl
       - libx264-dev
+      - libass-dev
       - libvorbis-dev
       - libjpeg-turbo8-dev
       - libxss-dev
@@ -131,6 +120,8 @@ parts:
     parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
     meson-parameters:
       - -Dprefix=/usr
+    build-packages:
+      - libass-dev  
     override-pull: |
       craftctl default
       craftctl set version=$(git describe --tags --abbrev=0 | cut -c 2-)
@@ -149,7 +140,9 @@ parts:
     stage-packages: 
       - libxpresent1
       - libxss1
+      - libass9
     prime:
+      - usr/lib/*/libass*
       - usr/lib/*/libXss*
       - usr/lib/*/libxpresent*
            
