@@ -1,0 +1,24 @@
+ yt-dlp:
+    plugin: python
+    after: [celluloid]
+    source: https://github.com/yt-dlp/yt-dlp/releases/download/2023.07.06/yt-dlp.tar.gz
+    source-checksum: sha256/6d2115b84b6c11867f92cf4c23705b536bfa0ba9d538b1885f52da6756f8c980
+    python-packages:
+      - pyxattr==0.8.1
+    build-environment:
+      - PATH: ${CRAFT_PART_INSTALL}/bin:${PATH}
+      - PYTHONPATH: ""
+    override-pull: |
+      craftctl default
+      sed -i 's/^certifi\b/#\0/' requirements.txt
+    stage:
+      - -bin/activate*
+      - -bin/Activate.ps1
+      - -bin/python*
+      - -bin/pip*
+      - -pyvenv.cfg
+      - -lib/**/setuptools*
+      - -lib/**/pip*
+      - -share/doc
+      - -share/man
+   
