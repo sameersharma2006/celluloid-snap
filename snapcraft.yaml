@@ -7,6 +7,7 @@ compression: lzo
 architectures:
   - build-on: amd64
   - build-on: arm64
+  - build-on: armhf
   
 slots:
   celluloid:
@@ -134,9 +135,7 @@ parts:
       craftctl set version=$(git describe --tags --abbrev=0 | cut -c 2-)
       patch -p1 < $CRAFT_PROJECT_DIR/local/patches/upstream.patch
     prime:
-      - -usr/share/doc
       - -usr/share/man  
-      - -usr/share/ffmpeg/examples
       - -usr/include
       - -usr/lib/*/pkgconfig  
     
