@@ -64,6 +64,12 @@ parts:
       - libvorbis-dev
     stage-packages:
       - libmp3lame0
+    prime:
+      - -usr/share/doc
+      - -usr/share/man  
+      - -usr/share/ffmpeg/examples
+      - -usr/include
+      - -usr/lib/*/pkgconfig   
 
   mpv:
     source: https://github.com/mpv-player/mpv.git
@@ -84,9 +90,10 @@ parts:
       - libjpeg-turbo8-dev
       - libxss-dev
       - libxpresent-dev
-    stage:
-      - usr/lib
-      - usr/include  
+    prime:
+      - -usr/share 
+      - -usr/include
+      - -usr/lib/*/pkgconfig  
       
   yt-dlp:
     plugin: python
@@ -125,7 +132,6 @@ parts:
     override-pull: |
       craftctl default
       craftctl set version=$(git describe --tags --abbrev=0 | cut -c 2-)
-      sed -e 's|Icon=io.github.celluloid_player.Celluloid|Icon=${SNAP}/usr/share/icons/hicolor/scalable/apps/github.celluloid_player.Celluloid.svg|' -i data/io.github.celluloid_player.Celluloid.desktop.in
       patch -p1 < $CRAFT_PROJECT_DIR/local/patches/upstream.patch
     prime:
       - -usr/share/doc
@@ -142,7 +148,7 @@ parts:
       - libxss1
       - libass9
     prime:
-      - usr/lib/libass*
+      - usr/lib/*/libass*
       - usr/lib/*/libXss*
       - usr/lib/*/libXpresent*
            
