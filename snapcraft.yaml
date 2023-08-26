@@ -66,51 +66,19 @@ parts:
     prime:  
       - -usr/include
       - -usr/lib/*/pkgconfig
-     
-  libass:
-    source: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
-    source-checksum: sha256/f0da0bbfba476c16ae3e1cfd862256d30915911f7abaa1b16ce62ee653192784
-    after: [ffmpeg]
-    plugin: autotools
-    autotools-configure-parameters:
-      - --prefix=/usr 
-      - --disable-static 
-    build-packages:
-      - libfontconfig-dev
-      - libfreetype-dev
-    stage:
-      - usr  
-    prime:
-      - -usr/include  
-    
-  mpv:
-    source: https://github.com/mpv-player/mpv.git
-    source-tag: v0.35.1 
-    after: [libass]
-    plugin: meson
-    meson-parameters:
-      - --prefix=/usr
-      - --buildtype=release
-      - -Dlibmpv=true
-    build-packages:
-      - curl
-      - libx264-dev
-      - libvorbis-dev
-      - libjpeg-turbo8-dev
-    stage:
-      - usr  
-    prime:
-      - -usr/include
-  
+
   celluloid:
     source: https://github.com/celluloid-player/celluloid.git
     source-tag: v0.25
-    after: [mpv]
+    after: [ffmpeg]
     plugin: meson
     parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
     meson-parameters:
       - --prefix=/snap/celluloid/current/usr
       - --buildtype=release
+    build-packages:
+      - libass-dev 
+      - libmpv-dev 
     override-pull: |
       craftctl default
       craftctl set version=$(git describe --tags --abbrev=0 | cut -c 2-)
@@ -118,10 +86,20 @@ parts:
       patch -p1 < $CRAFT_PROJECT_DIR/local/patches/upstream.patch
     organize:
       snap/celluloid/current/usr: usr  
-
+  
+  deps:
+    after: [celluloid]
+    plugin: nil
+    stage-packages:
+      - libmpv1
+      - libass9
+    prime:
+      - usr/lib/*/libass*
+      - usr/lib/*/libmpv*  
+    
   cleanup:
     after:  
-      - celluloid
+      - deps
     plugin: nil
     build-snaps: 
       - gnome-42-2204
