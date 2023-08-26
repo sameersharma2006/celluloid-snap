@@ -131,5 +131,4 @@ parts:
       set -eux
       for snap in "gnome-42-2204" "core22" "gtk-common-themes"; do
           cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$CRAFT_PRIME/{}" \;
-      done  
-      
+      done
