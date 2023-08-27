@@ -41,10 +41,22 @@ apps:
       - mpris
     
 parts: 
+  dav1d:
+    source: https://code.videolan.org/videolan/dav1d.git
+    source-tag: 1.2.1 
+    plugin: meson
+    meson-parameters:
+      - -Dprefix=/usr
+    build-packages:
+      - nasm
+    prime:
+      - usr/lib/*/libdav1d*  
+      
   ffmpeg:
     plugin: autotools
     source: https://ffmpeg.org/releases/ffmpeg-6.0.tar.xz
     source-checksum: sha256/57be87c22d9b49c112b6d24bc67d42508660e6b718b3db89c44e47e289137082
+    after: [dav1d]
     autotools-configure-parameters:
       - --prefix=/usr
       - --libdir=/usr/lib/$CRAFT_ARCH_TRIPLET
@@ -58,11 +70,21 @@ parts:
       - --enable-gnutls
       - --enable-libmp3lame
       - --enable-libvorbis
+      - --enable-libvpx
+      - --enable-libdav1d
+      - --enable-libopus
+      - --enable-libx264
+      - --enable-libx265
     build-packages:
       - nasm
       - libgnutls28-dev
       - libmp3lame-dev
       - libvorbis-dev
+      - libvpx-dev
+      - libopus-dev
+      - libx264-dev
+      - libx265-dev 
+      - libnuma-dev
     stage-packages:
       - libmp3lame0
     prime:
@@ -146,10 +168,16 @@ parts:
       - libxpresent1
       - libxss1
       - libass9
+      - libnuma1
+      - libx264-163
+      - libx265-199
     prime:
       - usr/lib/*/libass*
       - usr/lib/*/libXss*
       - usr/lib/*/libXpresent*
+      - usr/lib/*/libx265*
+      - usr/lib/*/libx264*
+      - usr/lib/*/libnuma*
            
   cleanup:
     after:  
