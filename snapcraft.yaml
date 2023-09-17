@@ -1,6 +1,6 @@
 name: celluloid
 base: core22
-adopt-info: celluloid  
+adopt-info: celluloid
 grade: stable
 confinement: strict
 compression: lzo
@@ -8,7 +8,7 @@ architectures:
   - build-on: amd64
   - build-on: arm64
   - build-on: armhf
-  
+
 slots:
   celluloid:
     interface: dbus
@@ -16,15 +16,14 @@ slots:
     name: io.github.celluloid_player.Celluloid
   mpris:
     name: Celluloid
-    
-environment:
-  PYTHONPATH: ${SNAP}/lib/python3.10/site-packages:${SNAP}/usr/lib/python3/dist-packages
 
 apps:
   celluloid:
     command: usr/bin/celluloid
     extensions: [gnome]
-    common-id: io.github.celluloid_player.Celluloid 
+    environment:
+      PYTHONPATH: ${SNAP}/lib/python3.10/site-packages:${SNAP}/usr/lib/python3/dist-packages
+    common-id: io.github.celluloid_player.Celluloid
     desktop: usr/share/applications/io.github.celluloid_player.Celluloid.desktop
     plugs:
       - home
@@ -39,24 +38,12 @@ apps:
       - screen-inhibit-control
     slots:
       - mpris
-    
-parts: 
-  dav1d:
-    source: https://code.videolan.org/videolan/dav1d.git
-    source-tag: 1.2.1 
-    plugin: meson
-    meson-parameters:
-      - -Dprefix=/usr
-    build-packages:
-      - nasm
-    prime:
-      - usr/lib/*/libdav1d*  
-      
+
+parts:
   ffmpeg:
     plugin: autotools
     source: https://ffmpeg.org/releases/ffmpeg-6.0.tar.xz
     source-checksum: sha256/57be87c22d9b49c112b6d24bc67d42508660e6b718b3db89c44e47e289137082
-    after: [dav1d]
     autotools-configure-parameters:
       - --prefix=/usr
       - --libdir=/usr/lib/$CRAFT_ARCH_TRIPLET
@@ -70,33 +57,22 @@ parts:
       - --enable-gnutls
       - --enable-libmp3lame
       - --enable-libvorbis
-      - --enable-libvpx
-      - --enable-libdav1d
-      - --enable-libopus
-      - --enable-libx264
-      - --enable-libx265
     build-packages:
       - nasm
-      - libgnutls28-dev
       - libmp3lame-dev
       - libvorbis-dev
-      - libvpx-dev
-      - libopus-dev
-      - libx264-dev
-      - libx265-dev 
-      - libnuma-dev
     stage-packages:
       - libmp3lame0
     prime:
       - -usr/share/doc
-      - -usr/share/man  
+      - -usr/share/man
       - -usr/share/ffmpeg/examples
       - -usr/include
-      - -usr/lib/*/pkgconfig   
+      - -usr/lib/*/pkgconfig
 
   mpv:
     source: https://github.com/mpv-player/mpv.git
-    source-tag: v0.35.1
+    source-tag: v0.36.0
     after: [ffmpeg]
     plugin: meson
     meson-parameters:
@@ -114,10 +90,10 @@ parts:
       - libxss-dev
       - libxpresent-dev
     prime:
-      - -usr/share 
+      - -usr/share
       - -usr/include
-      - -usr/lib/*/pkgconfig  
-      
+      - -usr/lib/*/pkgconfig
+
   yt-dlp:
     plugin: python
     after: [mpv]
@@ -141,49 +117,42 @@ parts:
       - -lib/**/pip*
       - -share/doc
       - -share/man
-      
+
   celluloid:
     source: https://github.com/celluloid-player/celluloid.git
-    source-tag: v0.25
+    source-tag: v0.26
     after: [yt-dlp]
     plugin: meson
     parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
     meson-parameters:
       - -Dprefix=/usr
     build-packages:
-      - libass-dev  
+      - libass-dev
     override-pull: |
       craftctl default
       craftctl set version=$(git describe --tags --abbrev=0 | cut -c 2-)
-      patch -p1 < $CRAFT_PROJECT_DIR/local/patches/upstream.patch
     prime:
-      - -usr/share/man  
+      - -usr/share/man
       - -usr/include
-      - -usr/lib/*/pkgconfig  
-    
+      - -usr/lib/*/pkgconfig
+
   deps:
     plugin: nil
     after: [celluloid]
-    stage-packages: 
+    stage-packages:
       - libxpresent1
       - libxss1
       - libass9
-      - libnuma1
-      - libx264-163
-      - libx265-199
     prime:
       - usr/lib/*/libass*
       - usr/lib/*/libXss*
       - usr/lib/*/libXpresent*
-      - usr/lib/*/libx265*
-      - usr/lib/*/libx264*
-      - usr/lib/*/libnuma*
-           
+
   cleanup:
-    after:  
+    after:
       - deps
     plugin: nil
-    build-snaps: 
+    build-snaps:
       - gnome-42-2204
       - core22
       - gtk-common-themes
