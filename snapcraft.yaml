@@ -43,6 +43,7 @@ parts:
   ffmpeg:
     plugin: autotools
     source: https://ffmpeg.org/releases/ffmpeg-6.1.tar.xz
+    source-checksum: sha256/488c76e57dd9b3bee901f71d5c95eaf1db4a5a31fe46a28654e837144207c270
     autotools-configure-parameters:
       - --prefix=/usr
       - --libdir=/usr/lib/$CRAFT_ARCH_TRIPLET
