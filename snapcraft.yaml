@@ -106,7 +106,7 @@ parts:
     override-pull: |
       craftctl default
       sed -i 's/^certifi\b/#\0/' requirements.txt
-    stage:
+    prime:
       - -bin/activate*
       - -bin/Activate.ps1
       - -bin/python*
@@ -116,6 +116,8 @@ parts:
       - -lib/**/pip*
       - -share/doc
       - -share/man
+      - -share/fish
+      - -share/zsh
       - -include
 
   celluloid:
