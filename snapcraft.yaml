@@ -97,8 +97,8 @@ parts:
   yt-dlp:
     plugin: python
     after: [mpv]
-    source: https://github.com/yt-dlp/yt-dlp/releases/download/2023.07.06/yt-dlp.tar.gz
-    source-checksum: sha256/6d2115b84b6c11867f92cf4c23705b536bfa0ba9d538b1885f52da6756f8c980
+    source: https://github.com/yt-dlp/yt-dlp/releases/download/2023.10.13/yt-dlp.tar.gz
+    source-checksum: sha256/64944f4452a7657b5fb31ae55d823d9411a1a29f9c1071d33fa3e6286e20522a
     python-packages:
       - pyxattr==0.8.1
     build-environment:
