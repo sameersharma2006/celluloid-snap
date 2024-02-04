@@ -90,6 +90,7 @@ parts:
       - libjpeg-turbo8-dev
       - libxss-dev
       - libxpresent-dev
+      - liblua5.2-dev
     prime:
       - -usr/share
       - -usr/include
