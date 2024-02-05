@@ -22,8 +22,6 @@ apps:
   celluloid:
     command: usr/bin/celluloid
     extensions: [gnome]
-    environment:
-      PYTHONPATH: ${SNAP}/lib/python3.10/site-packages:${SNAP}/usr/lib/python3/dist-packages
     common-id: io.github.celluloid_player.Celluloid
     desktop: usr/share/applications/io.github.celluloid_player.Celluloid.desktop
     plugs:
@@ -43,8 +41,7 @@ apps:
 parts:
   ffmpeg:
     plugin: autotools
-    source: https://ffmpeg.org/releases/ffmpeg-6.1.tar.xz
-    source-checksum: sha256/488c76e57dd9b3bee901f71d5c95eaf1db4a5a31fe46a28654e837144207c270
+    source: https://ffmpeg.org/releases/ffmpeg-6.1.1.tar.xz
     autotools-configure-parameters:
       - --prefix=/usr
       - --libdir=/usr/lib/$CRAFT_ARCH_TRIPLET
