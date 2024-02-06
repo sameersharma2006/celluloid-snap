@@ -124,7 +124,7 @@ parts:
       - usr/lib/*/libass*
       - usr/lib/*/libXss*
       - usr/lib/*/libXpresent*
-      - usr/lib/*/liblua*
+      - usr/lib/*/liblua5.2.so*
 
   cleanup:
     after:
