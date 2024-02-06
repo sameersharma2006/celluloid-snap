@@ -70,7 +70,7 @@ parts:
 
   mpv:
     source: https://github.com/mpv-player/mpv.git
-    source-tag: v0.36.0
+    source-tag: v0.37.0
     after: [ffmpeg]
     plugin: meson
     meson-parameters:
@@ -119,10 +119,12 @@ parts:
       - libxpresent1
       - libxss1
       - libass9
+      - liblua5.2-0
     prime:
       - usr/lib/*/libass*
       - usr/lib/*/libXss*
       - usr/lib/*/libXpresent*
+      - usr/lib/*/liblua*
 
   cleanup:
     after:
