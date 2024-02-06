@@ -70,7 +70,7 @@ parts:
 
   mpv:
     source: https://github.com/mpv-player/mpv.git
-    source-tag: v0.37.0
+    source-tag: v0.35.1
     after: [ffmpeg]
     plugin: meson
     meson-parameters:
