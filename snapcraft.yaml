@@ -41,7 +41,7 @@ apps:
 parts:
   ffmpeg:
     plugin: autotools
-    source: https://ffmpeg.org/releases/ffmpeg-7.0.tar.gz
+    source: https://ffmpeg.org/releases/ffmpeg-6.1.1.tar.gz
     autotools-configure-parameters:
       - --prefix=/usr
       - --libdir=/usr/lib/$CRAFT_ARCH_TRIPLET
