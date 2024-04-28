@@ -41,9 +41,6 @@ parts:
   ffmpeg:
     plugin: autotools
     source: https://ffmpeg.org/releases/ffmpeg-7.0.tar.gz
-  # ext:updatesnap
-#   version-format:
-#     ignore: true    
     autotools-configure-parameters:
       - --prefix=/usr
       - --libdir=/usr/lib/$CRAFT_ARCH_TRIPLET
