@@ -33,7 +33,6 @@ apps:
       - network-status
       - removable-media
       - unity7
-      - optical-drive
       - screen-inhibit-control
     slots:
       - mpris
@@ -41,7 +40,10 @@ apps:
 parts:
   ffmpeg:
     plugin: autotools
-    source: https://ffmpeg.org/releases/ffmpeg-6.1.1.tar.gz
+    source: https://ffmpeg.org/releases/ffmpeg-7.0.tar.gz
+  # ext:updatesnap
+#   version-format:
+#     ignore: true    
     autotools-configure-parameters:
       - --prefix=/usr
       - --libdir=/usr/lib/$CRAFT_ARCH_TRIPLET
@@ -55,10 +57,21 @@ parts:
       - --enable-gnutls
       - --enable-libmp3lame
       - --enable-libvorbis
+      - --enable-libdav1d
+      - --enable-libopus
+      - --enable-libx264
+      - --enable-libx265
+      - --enable-libvpx
     build-packages:
       - nasm
       - libmp3lame-dev
       - libvorbis-dev
+      - libopus-dev
+      - libx264-dev
+      - libx265-dev
+      - libnuma-dev
+      - libvpx-dev
+      - libdav1d-dev
     stage-packages:
       - libmp3lame0
     prime:
@@ -71,6 +84,9 @@ parts:
   mpv:
     source: https://github.com/mpv-player/mpv.git
     source-tag: v0.35.1
+  # ext:updatesnap
+#   version-format:
+#     ignore: true    
     after: [ffmpeg]
     plugin: meson
     meson-parameters:
@@ -79,6 +95,13 @@ parts:
       - -Dlibmpv=true
       - -Dx11=enabled
       - -Dwayland=enabled
+      - -Dshaderc=disabled
+      - -Dpipewire=disabled
+      - -Dalsa=disabled
+      - -Djack=disabled
+      - -Dsndio=disabled
+      - -Dsysconfdir=/snap/mpv/current/usr/share
+      - -Ddrm=enabled
     build-packages:
       - curl
       - libx264-dev
@@ -89,13 +112,15 @@ parts:
       - libxpresent-dev
       - liblua5.2-dev
     prime:
-      - -usr/share
+      - -usr/share/man
+      - -usr/share/help
       - -usr/include
       - -usr/lib/*/pkgconfig
 
   celluloid:
     source: https://github.com/celluloid-player/celluloid.git
-    source-tag: v0.26
+    source-tag: 'v0.26'
+    source-depth: 1
     after: [mpv]
     plugin: meson
     parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
@@ -120,22 +145,23 @@ parts:
       - libxss1
       - libass9
       - liblua5.2-0
+      - libdav1d5
+      - libnuma1
+      - libx264-163
+      - libx265-199
+      - libass9
+      - libvdpau1
+      - libvpx7
     prime:
       - usr/lib/*/libass*
       - usr/lib/*/libXss*
       - usr/lib/*/libXpresent*
       - usr/lib/*/liblua5.2.so*
-
-  cleanup:
-    after:
-      - deps
-    plugin: nil
-    build-snaps:
-      - gnome-42-2204
-      - core22
-      - gtk-common-themes
-    override-prime: |
-      set -eux
-      for snap in "gnome-42-2204" "core22" "gtk-common-themes"; do
-          cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$CRAFT_PRIME/{}" \;
-      done
+      - usr/lib/*/libdav1d.so*
+      - usr/lib/*/libnuma*
+      - usr/lib/*/libx264*
+      - usr/lib/*/libx265*
+      - usr/lib/*/libass*
+      - usr/lib/*/libvdpau*
+      - usr/lib/*/libvpx*
+      - -usr/lib/arm-linux-gnueabihf/libnuma.so*
