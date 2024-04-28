@@ -116,8 +116,8 @@ parts:
 
   celluloid:
     source: https://github.com/celluloid-player/celluloid.git
-    source-tag: 'v0.26'
     source-depth: 1
+    source-tag: 'v0.26'
     after: [mpv]
     plugin: meson
     parse-info: [usr/share/metainfo/io.github.celluloid_player.Celluloid.appdata.xml]
