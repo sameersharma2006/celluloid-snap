@@ -79,7 +79,10 @@ parts:
       - -usr/lib/*/pkgconfig
 
   mpv:
-    source: https://github.com/mpv-player/mpv.git
+  # ext:updatesnap
+#   version-format:
+#     ignore: true     
+    source: https://github.com/mpv-player/mpv.git  
     source-tag: v0.35.1
     after: [ffmpeg]
     plugin: meson
@@ -113,7 +116,7 @@ parts:
 
   celluloid:
     source: https://github.com/celluloid-player/celluloid.git
-    source-tag: "v0.26"
+    source-tag: 'v0.26'
     source-depth: 1
     after: [mpv]
     plugin: meson
