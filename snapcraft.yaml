@@ -81,9 +81,6 @@ parts:
   mpv:
     source: https://github.com/mpv-player/mpv.git
     source-tag: v0.35.1
-  # ext:updatesnap
-#   version-format:
-#     ignore: true    
     after: [ffmpeg]
     plugin: meson
     meson-parameters:
